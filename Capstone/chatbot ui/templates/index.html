@@ -9,7 +9,7 @@
       font-family: 'Arial', Helvetica, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f1c6d8; /* Light pink background */
+      background-color: #f1c6d8;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -18,15 +18,15 @@
     }
 
     h1 {
-      color: #b380ff; /* Light purple title */
+      color: #b380ff;
       font-family: 'Comic Sans MS', cursive;
       text-shadow: 1px 1px #e0b3ff;
       margin-top: 30px;
     }
 
     #chatbox {
-      width: 90%; /* Chatbox width set to 90% of screen width */
-      max-width: 600px; /* Increase max-width to 600px */
+      width: 90%;
+      max-width: 600px;
       background-color: #ffe6f0;
       border-radius: 20px;
       padding: 20px;
@@ -35,14 +35,14 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      height: 70vh; /* Adjust height to 70% of the viewport height */
+      height: 70vh;
     }
 
     #chatlog {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 80%; /* Set chatlog max-height */
+      max-height: 80%;
       overflow-y: auto;
     }
 
@@ -97,7 +97,6 @@
       background-color: #b380ff;
     }
 
-    /* 🎀 Kuromi GIF (waiting) */
     #kuromi-gif {
       position: fixed;
       bottom: 20px;
@@ -127,7 +126,6 @@
     </div>
   </div>
 
-  <!-- 🖤 Kuromi waiting GIF -->
   <img src="https://media.tenor.com/FSkILJxlAFUAAAAM/kuromi-waiting-for-you.gif" 
        alt="Kuromi Waiting for You" id="kuromi-gif" />
 
@@ -139,9 +137,12 @@
       const chatlog = document.getElementById("chatlog");
 
       // Add user message
-      chatlog.innerHTML += `<div class="user-message">${user_input}</div>`;
+      const userMessage = document.createElement("div");
+      userMessage.className = "user-message";
+      userMessage.textContent = user_input;
+      chatlog.appendChild(userMessage);
 
-      // Add typing/loading message with animated Sanrio GIF
+      // Add typing/loading message
       const loadingMessage = document.createElement("div");
       loadingMessage.className = "bot-message";
       loadingMessage.id = "loading-message";
@@ -153,9 +154,9 @@
              style="width:60px; margin-top:8px; border-radius: 10px;">
       `;
       chatlog.appendChild(loadingMessage);
-
       chatlog.scrollTop = chatlog.scrollHeight;
 
+      // Send message to backend
       fetch('/ollama-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -167,20 +168,31 @@
         const loading = document.getElementById("loading-message");
         if (loading) loading.remove();
 
-        // Add bot response
-        const botResponse = data.response;
-        chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> ${botResponse}</div>`;
+        // Handle case where bot response is empty or malformed
+        const botResponseHTML = data.response || "<strong>Serphia AI 🔮:</strong> Sorry, I didn't quite catch that. Could you please rephrase?";
+
+        // Add bot response (already formatted HTML)
+        const botMessage = document.createElement("div");
+        botMessage.className = "bot-message";
+        botMessage.innerHTML = botResponseHTML;
+        chatlog.appendChild(botMessage);
         chatlog.scrollTop = chatlog.scrollHeight;
       })
       .catch(error => {
         console.error('Error:', error);
 
+        // Remove loading message
         const loading = document.getElementById("loading-message");
         if (loading) loading.remove();
 
-        chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> Sorry, something went wrong.</div>`;
+        // Show error message
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "bot-message";
+        errorMsg.innerHTML = "<strong>Serphia AI 🔮:</strong> Sorry, something went wrong. Please try again later.";
+        chatlog.appendChild(errorMsg);
       });
 
+      // Clear input
       document.getElementById("user_input").value = "";
     }
   </script>

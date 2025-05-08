@@ -41,6 +41,31 @@ try:
 except Exception as e:
     app.logger.error(f"Error loading Excel dataset: {e}")
 
+#organize and format the chatbot response in a clear manner
+# Organize and format the chatbot response in a clean, styled HTML-friendly manner
+def format_bot_response(raw_response):
+    # Replace Markdown-style line breaks with <br>
+    message = raw_response.replace("\n", "<br>")
+
+    # Convert bullet points into list items if any
+    if "-" in message:
+        lines = message.split("<br>")
+        list_items = ""
+        for line in lines:
+            if line.strip().startswith("-"):
+                list_items += f"<li>{line.strip()[1:].strip()}</li>"
+            elif line.strip():
+                list_items += f"<p>{line.strip()}</p>"
+
+        message_html = f"<ul>{list_items}</ul>"
+    else:
+        message_html = message
+
+    # Wrap it with a heading
+    response_html = f"""
+    <strong>Serphia AI 🔮:</strong> {message_html}
+    """
+    return response_html
 # Ensure the expected column exists
 if 'User Input Example' not in df.columns:
     app.logger.error("Column 'User Input Example' not found in the dataset.")
@@ -92,6 +117,18 @@ def ollama_chat():
 
         context = "\n".join(retrieved_docs)
 
+        # Modify the response with actual contact details
+        contact_info = """
+        Here are the ways you can contact Kolorist SG Salon:
+        
+        • **Phone**: You can reach us at +65 6294 8888. Our friendly staff will be more than happy to attend to your queries and concerns.
+        • **Email**: Send us an email at info@koloristsg.com, and we'll respond promptly. Please provide as much detail as possible so that we can better assist you.
+        • **Online Form**: You can also submit a contact form on our website, and we'll get back to you within 24 hours.
+        • **Social Media**: Follow us on social media platforms like Facebook, Instagram, or Twitter, and send us a direct message. We're always available to help!
+        
+        Remember, at Kolorist SG Salon, your satisfaction is our top priority. If you have any questions or concerns about our services, don't hesitate to reach out.
+        """
+
         # Build a clean, AI-friendly prompt
         prompt = f"""
 You are Serphia AI 🔮, a helpful assistant for Kolorist SG Salon.
@@ -105,6 +142,7 @@ User's Question:
 {user_message}
 
 Your Response:
+{contact_info}
 """
 
         app.logger.debug(f"Prompt sent to Ollama: {prompt}")
@@ -128,7 +166,9 @@ Your Response:
                     app.logger.debug(f"Non-JSON line from Ollama: {decoded_line}")
                     continue
 
-        bot_reply = response_text.strip() if response_text else 'Sorry, no response from Serphia AI 🔮.'
+        response_text = response_text.strip() if response_text else 'Sorry, no response from Serphia AI 🔮.'
+        bot_reply = format_bot_response(response_text)
+
         app.logger.debug(f"Ollama AI reply: {bot_reply}")
 
         return jsonify({'response': bot_reply})
@@ -140,10 +180,6 @@ Your Response:
     except Exception as e:
         app.logger.error(f"Error in ollama-chat: {e}")
         return jsonify({'response': "Sorry, an error occurred while processing your request."})
-
-if __name__ == "__main__":
-    try:
-        app.run(debug=True, host='0.0.0.0', port=5001)
-        app.logger.debug("Flask app running on http://127.0.0.1:5001/")
-    except Exception as e:
-        app.logger.error(f"Error starting Flask app: {e}")
+    
+if __name__ == '__main__':
+    app.run(debug=True)
