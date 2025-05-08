@@ -25,8 +25,8 @@
     }
 
     #chatbox {
-      width: 100%;
-      max-width: 400px;
+      width: 90%; /* Chatbox width set to 90% of screen width */
+      max-width: 600px; /* Increase max-width to 600px */
       background-color: #ffe6f0;
       border-radius: 20px;
       padding: 20px;
@@ -35,13 +35,14 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+      height: 70vh; /* Adjust height to 70% of the viewport height */
     }
 
     #chatlog {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 400px;
+      max-height: 80%; /* Set chatlog max-height */
       overflow-y: auto;
     }
 
@@ -131,58 +132,57 @@
        alt="Kuromi Waiting for You" id="kuromi-gif" />
 
   <script>
-   function sendMessage() {
-  const user_input = document.getElementById("user_input").value;
-  if (user_input.trim() === "") return;
+    function sendMessage() {
+      const user_input = document.getElementById("user_input").value;
+      if (user_input.trim() === "") return;
 
-  const chatlog = document.getElementById("chatlog");
+      const chatlog = document.getElementById("chatlog");
 
-  // Add user message
-  chatlog.innerHTML += `<div class="user-message">${user_input}</div>`;
+      // Add user message
+      chatlog.innerHTML += `<div class="user-message">${user_input}</div>`;
 
-  // Add typing/loading message with animated Sanrio GIF
-  const loadingMessage = document.createElement("div");
-  loadingMessage.className = "bot-message";
-  loadingMessage.id = "loading-message";
-  loadingMessage.innerHTML = `
-    <strong>Serphia AI 🔮:</strong> Thinking... ✨✨✨
-    <br>
-    <img src="https://tenor.com/view/kuromi-phone-call-onegai-my-melody-phone-talking-gif-11626657"
-         alt="Kuromi Typing" 
-         style="width:60px; margin-top:8px; border-radius: 10px;">
-  `;
-  chatlog.appendChild(loadingMessage);
+      // Add typing/loading message with animated Sanrio GIF
+      const loadingMessage = document.createElement("div");
+      loadingMessage.className = "bot-message";
+      loadingMessage.id = "loading-message";
+      loadingMessage.innerHTML = `
+        <strong>Serphia AI 🔮:</strong> Thinking... ✨✨✨
+        <br>
+        <img src="https://tenor.com/view/kuromi-phone-call-onegai-my-melody-phone-talking-gif-11626657"
+             alt="Kuromi Typing" 
+             style="width:60px; margin-top:8px; border-radius: 10px;">
+      `;
+      chatlog.appendChild(loadingMessage);
 
-  chatlog.scrollTop = chatlog.scrollHeight;
+      chatlog.scrollTop = chatlog.scrollHeight;
 
-  fetch('/ollama-chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: user_input })
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Remove loading message
-    const loading = document.getElementById("loading-message");
-    if (loading) loading.remove();
+      fetch('/ollama-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: user_input })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Remove loading message
+        const loading = document.getElementById("loading-message");
+        if (loading) loading.remove();
 
-    // Add bot response
-    const botResponse = data.response;
-    chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> ${botResponse}</div>`;
-    chatlog.scrollTop = chatlog.scrollHeight;
-  })
-  .catch(error => {
-    console.error('Error:', error);
+        // Add bot response
+        const botResponse = data.response;
+        chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> ${botResponse}</div>`;
+        chatlog.scrollTop = chatlog.scrollHeight;
+      })
+      .catch(error => {
+        console.error('Error:', error);
 
-    const loading = document.getElementById("loading-message");
-    if (loading) loading.remove();
+        const loading = document.getElementById("loading-message");
+        if (loading) loading.remove();
 
-    chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> Sorry, something went wrong.</div>`;
-  });
+        chatlog.innerHTML += `<div class="bot-message"><strong>Serphia AI 🔮:</strong> Sorry, something went wrong.</div>`;
+      });
 
-  document.getElementById("user_input").value = "";
-}
-
+      document.getElementById("user_input").value = "";
+    }
   </script>
 
 </body>
