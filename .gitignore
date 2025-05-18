@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.env
+*.venv
+.env
+.env.*
+.conda
+
+# Jupyter / notebooks
+*.ipynb_checkpoints
+
+# Chatbot logs/history
+chat_history.json
+
+# Streamlit/misc
+*.xlsx
+*.db
+*.log
+.DS_Store
+
+# VSCode
+.vscode/
+
+# OS junk
+Thumbs.db
