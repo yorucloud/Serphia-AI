@@ -1,0 +1,8 @@
+{
+  "app_name": "Kolorist Chatbot",
+  "greeting": "Ask anything...",
+  "thinking": "Thinking...",
+  "error": "⚠️ Error: ",
+  "default_reply": "🤔 Sorry, I didn't understand that.",
+  "save_success": "✅ Chat history saved as chat_history.json!"
+}
