@@ -8,7 +8,7 @@ Features :
 
 -Multilingual(English & Korean)
 
--Specific Data on Kolorist Salon based on their website Kolorist.sg 
+-Chatbot is trained on specific data of Kolorist Salon based on their website Kolorist.sg 
 
 
 Software : OpenWebUI
