@@ -1,0 +1,6 @@
+flask
+openai
+llama3
+html
+css
+python3.10
