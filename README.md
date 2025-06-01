@@ -3,8 +3,11 @@ Chatbot for Kolorist.sg
 Features : 
 
 -Image to Text 
--Speech to Text 
+
+-Speech to Text
+
 -Multilingual(English & Korean)
+
 -Specific Data on Kolorist Salon based on their website Kolorist.sg 
 
 
