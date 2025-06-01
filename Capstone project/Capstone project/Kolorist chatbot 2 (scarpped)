@@ -1,0 +1,92 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# Simple rule-based chatbot function
+def chatbot_response(user_input):
+    user_input = user_input.lower()
+    if "image" in user_input:
+        return "Sure! What kind of image would you like to create?"
+    elif "advice" in user_input:
+        return "Of course! What do you need advice on?"
+    elif "plan" in user_input:
+        return "Let’s make a plan. What are we planning for?"
+    elif "hello" in user_input or "hi" in user_input:
+        return "Hi there! How can I assist you today?"
+    elif "bye" in user_input:
+        return "Goodbye! Feel free to come back anytime."
+    else:
+        return "I'm not sure how to respond to that, but I'm here to help!"
+
+# Send button logic
+def send_message(event=None):
+    user_text = user_input.get()
+    if user_text.strip() == "":
+        return
+    chat_history.config(state=tk.NORMAL)
+    chat_history.insert(tk.END, "You: " + user_text + "\n")
+    bot_reply = chatbot_response(user_text)
+    chat_history.insert(tk.END, "Bot: " + bot_reply + "\n\n")
+    chat_history.config(state=tk.DISABLED)
+    user_input.delete(0, tk.END)
+
+# Main application window
+root = tk.Tk()
+root.title("AI Chatbot")
+root.geometry("400x700")
+root.configure(bg="white")
+
+# "Get Plus" button
+get_plus = tk.Label(root, text="Demo Bot for Kolorists", bg="#FF8C00", fg="white", font=("Helvetica", 10), padx=10, pady=5)
+get_plus.place(x=125, y=20)
+
+# Title
+title_label = tk.Label(root, text="What can I help with?", bg="#FF8C00", fg="white", font=("Helvetica", 18, "bold"))
+title_label.place(relx=0.5, y=80, anchor="center")
+
+# Button styles
+button_style = {"font": ("Helvetica", 12), "bg": "#FF8C00", "fg": "white", "width": 18, "height": 2, "bd": 0}
+
+# Action buttons
+create_btn = tk.Button(root, text="🖼️  Pick a service", **button_style)
+create_btn.place(x=40, y=120)
+
+advice_btn = tk.Button(root, text="🎓  Beauty Tips", **button_style)
+advice_btn.place(x=210, y=120)
+
+plan_btn = tk.Button(root, text="💡  Plan a shedule", **button_style)
+plan_btn.place(x=40, y=180)
+
+more_btn = tk.Button(root, text="⋯ Help", **button_style)
+more_btn.place(x=210, y=180)
+
+# Chat history display
+chat_history = tk.Text(root, bg="#FF8C00", fg="white", font=("Helvetica", 12), wrap="word", state=tk.DISABLED)
+chat_history.place(x=20, y=250, width=360, height=350)
+
+# Input field frame
+input_frame = tk.Frame(root, bg="#FF8C00")
+input_frame.place(x=0, y=620, width=400, height=60)
+
+# Text entry box
+user_input = tk.Entry(input_frame, font=("Helvetica", 14), bg="#FF8C00", fg="white", insertbackground="white")
+user_input.place(x=10, y=10, width=320, height=40)
+user_input.insert(0, "Ask anything")
+
+def clear_placeholder(event):
+    if user_input.get() == "Ask anything":
+        user_input.delete(0, tk.END)
+
+def restore_placeholder(event):
+    if user_input.get() == "":
+        user_input.insert(0, "Ask anything")
+
+user_input.bind("<FocusIn>", clear_placeholder)
+user_input.bind("<FocusOut>", restore_placeholder)
+user_input.bind("<Return>", send_message)
+
+# Send button
+send_button = tk.Button(input_frame, text="➤", font=("Helvetica", 14), bg="#FF8C00", fg="white", command=send_message)
+send_button.place(x=340, y=10, width=50, height=40)
+
+# Start the app
+root.mainloop()
